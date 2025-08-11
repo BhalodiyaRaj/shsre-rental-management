@@ -15,6 +15,10 @@ import OrderDetail from './pages/OrderDetail'
 import PickupManagement from './pages/PickupManagement'
 import ReturnManagement from './pages/ReturnManagement'
 import Checkout from './pages/Checkout'
+import Cart from './pages/Cart'
+import Delivery from './pages/Delivery'
+import Payment from './pages/Payment'
+import Wishlist from './pages/Wishlist'
 import UserManagement from './pages/UserManagement'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
@@ -24,6 +28,9 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userRole, setUserRole] = useState('customer') // 'admin' or 'customer'
   const [showCreateAccount, setShowCreateAccount] = useState(false)
+  const [cartItems, setCartItems] = useState([])
+  const [wishlist, setWishlist] = useState([])
+  const [deliveryInfo, setDeliveryInfo] = useState(null)
 
   const handleLogin = (role) => {
     setIsAuthenticated(true)
@@ -41,6 +48,59 @@ function App() {
   const handleLogout = () => {
     setIsAuthenticated(false)
     setUserRole('customer')
+    setCartItems([])
+    setWishlist([])
+    setDeliveryInfo(null)
+  }
+
+  const addToCart = (product) => {
+    setCartItems(prev => {
+      const existingItem = prev.find(item => item.id === product.id)
+      if (existingItem) {
+        return prev.map(item => 
+          item.id === product.id 
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      }
+      return [...prev, { ...product, quantity: 1 }]
+    })
+  }
+
+  const updateCartItem = (itemId, updatedItem) => {
+    setCartItems(prev => prev.map(item => 
+      item.id === itemId ? updatedItem : item
+    ))
+  }
+
+  const removeFromCart = (itemId) => {
+    setCartItems(prev => prev.filter(item => item.id !== itemId))
+  }
+
+  const addToWishlist = (productId) => {
+    setWishlist(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    )
+  }
+
+  const removeFromWishlist = (productId) => {
+    setWishlist(prev => prev.filter(id => id !== productId))
+  }
+
+  const isInWishlist = (productId) => {
+    return wishlist.includes(productId)
+  }
+
+  const updateDeliveryInfo = (info) => {
+    setDeliveryInfo(info)
+  }
+
+  const processPayment = (paymentData) => {
+    console.log('Payment processed:', paymentData)
+    setCartItems([])
+    setDeliveryInfo(null)
   }
 
   if (!isAuthenticated) {
@@ -51,9 +111,7 @@ function App() {
   }
 
   return (
-    // <Layout userRole={userRole} onLogout={handleLogout}>
-      <Routes>
-        {/* Admin Routes */}
+    <Routes>
         {userRole === 'admin' && (
           <>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -67,21 +125,30 @@ function App() {
             <Route path="/users" element={<UserManagement />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/create-account" element={<CreateAccount onSignUp={handleSignUp} />} />
+            <Route path="/logout" element={<Navigate to="/" replace />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/delivery" element={<Delivery />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/checkout" element={<Checkout />} />
           </>
         )}
 
-        {/* Customer Routes */}
-        {userRole === 'customer' && (
+       {userRole === 'customer' && (
           <>
-            <Route path="/dashboard" element={<CustomerDashboard />} />
-            <Route path="/products" element={<ProductCatalog />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/dashboard" element={<CustomerDashboard addToCart={addToCart} addToWishlist={addToWishlist} isInWishlist={isInWishlist} cartItems={cartItems} wishlist={wishlist} />} />
+            <Route path="/products" element={<ProductCatalog addToCart={addToCart} addToWishlist={addToWishlist} isInWishlist={isInWishlist} />} />
+            <Route path="/products/:id" element={<ProductDetail addToCart={addToCart} addToWishlist={addToWishlist} isInWishlist={isInWishlist} />} />
+            <Route path="/wishlist" element={<Wishlist wishlist={wishlist} addToCart={addToCart} removeFromWishlist={removeFromWishlist} isInWishlist={isInWishlist} />} />
+            <Route path="/cart" element={<Cart cartItems={cartItems} updateCartItem={updateCartItem} removeFromCart={removeFromCart} addToWishlist={addToWishlist} isInWishlist={isInWishlist} />} />
+            <Route path="/delivery" element={<Delivery cartItems={cartItems} updateDeliveryInfo={updateDeliveryInfo} />} />
+            <Route path="/payment" element={<Payment cartItems={cartItems} deliveryInfo={deliveryInfo} processPayment={processPayment} />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/orders" element={<CustomerOrders />} />
           </>
         )}
 
-        {/* Default redirect */}
         <Route 
           path="/" 
           element={
@@ -92,8 +159,7 @@ function App() {
           } 
         />
       </Routes>
-    // </Layout>
-  )
+    )
 }
 
 export default App 

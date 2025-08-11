@@ -13,15 +13,15 @@ import {
   User,
   Package
 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
-const CustomerDashboard = () => {
+const CustomerDashboard = ({ addToCart: addToCartProp, addToWishlist: addToWishlistProp, isInWishlist: isInWishlistProp, cartItems, wishlist }) => {
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [priceRange, setPriceRange] = useState('all')
   const [sortBy, setSortBy] = useState('featured')
   const [viewMode, setViewMode] = useState('grid')
-  const [cartItems, setCartItems] = useState([])
-  const [wishlist, setWishlist] = useState([])
 
   // Mock product data
   const products = [
@@ -190,31 +190,43 @@ const CustomerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top Navigation Bar */}
+     
       <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Left Section */}
+         
             <div className="flex items-center space-x-6">
-              <button className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors"
+              >
                 <Home className="h-5 w-5" />
                 <span className="font-medium">Home</span>
               </button>
-              <button className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
+              <button 
+                onClick={() => navigate('/products')}
+                className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors"
+              >
                 <Package className="h-5 w-5" />
                 <span className="font-medium">Rental Shop</span>
               </button>
-              <button className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
+              <button 
+                onClick={() => navigate('/wishlist')}
+                className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors"
+              >
                 <Heart className="h-5 w-5" />
-                <span className="font-medium">Wishlist</span>
+                <span className="font-medium">Wishlist ({wishlist.length})</span>
               </button>
-              <button className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
+              <button 
+                onClick={() => navigate('/cart')}
+                className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors"
+              >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="font-medium">Cart ({cartItems.length})</span>
               </button>
             </div>
 
-            {/* Right Section */}
+      
             <div className="flex items-center space-x-4">
               <button className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
                 <User className="h-5 w-5" />
@@ -231,7 +243,7 @@ const CustomerDashboard = () => {
         </div>
       </nav>
 
-      {/* Category Bar */}
+
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-4 py-3 overflow-x-auto">
@@ -254,13 +266,12 @@ const CustomerDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left Sidebar - Filters */}
+         
           <div className="lg:w-64 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Attributes</h3>
               
-              {/* Colors Filter */}
-              <div className="mb-6">
+                   <div className="mb-6">
                 <h4 className="text-sm font-medium text-gray-700 mb-3">Colors</h4>
                 <div className="space-y-2">
                   {['Red', 'Blue', 'Green', 'Black', 'White'].map((color) => (
@@ -272,7 +283,7 @@ const CustomerDashboard = () => {
                 </div>
               </div>
 
-              {/* Price Range Filter */}
+            
               <div className="mb-6">
                 <h4 className="text-sm font-medium text-gray-700 mb-3">Price Range</h4>
                 <select
@@ -288,7 +299,7 @@ const CustomerDashboard = () => {
                 </select>
               </div>
 
-              {/* Additional Filters */}
+            
               <div className="mb-6">
                 <h4 className="text-sm font-medium text-gray-700 mb-3">Availability</h4>
                 <label className="flex items-center">
@@ -311,13 +322,13 @@ const CustomerDashboard = () => {
             </div>
           </div>
 
-          {/* Right Section - Products */}
+      
           <div className="flex-1">
-            {/* Top Control Bar */}
+          
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center space-x-4">
-                  {/* Price List Dropdown */}
+                 
                   <div className="relative">
                     <select className="appearance-none bg-white border border-gray-300 rounded-md px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                       <option>Price List</option>
@@ -328,7 +339,7 @@ const CustomerDashboard = () => {
                     <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                   </div>
 
-                  {/* Search Bar */}
+                  
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
@@ -342,7 +353,7 @@ const CustomerDashboard = () => {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  {/* Sort Dropdown */}
+              
                   <div className="relative">
                     <select
                       value={sortBy}
@@ -358,7 +369,7 @@ const CustomerDashboard = () => {
                     <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                   </div>
 
-                  {/* View Toggle */}
+                
                   <div className="flex border border-gray-300 rounded-md">
                     <button
                       onClick={() => setViewMode('grid')}
@@ -385,7 +396,7 @@ const CustomerDashboard = () => {
               </div>
             </div>
 
-            {/* Product Grid */}
+
             <div className={`grid gap-6 ${
               viewMode === 'grid' 
                 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
@@ -394,8 +405,7 @@ const CustomerDashboard = () => {
               {sortedProducts.map((product) => (
                 <div key={product.id} className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow ${
                   viewMode === 'list' ? 'flex' : ''
-                }`}>
-                  {/* Product Image */}
+                }`}> {/* Product Image */}
                   <div className={`${viewMode === 'list' ? 'w-48 flex-shrink-0' : ''}`}>
                     <div className="aspect-square bg-gray-100 flex items-center justify-center relative">
                       <div className="w-16 h-16 bg-blue-200 rounded-lg flex items-center justify-center">
@@ -443,21 +453,21 @@ const CustomerDashboard = () => {
                     {/* Actions */}
                     <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => addToCart(product)}
+                        onClick={() => addToCartProp(product)}
                         disabled={!product.inStock}
                         className="flex-1 bg-black text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Add to Cart
                       </button>
                       <button
-                        onClick={() => toggleWishlist(product.id)}
+                        onClick={() => addToWishlistProp(product.id)}
                         className={`p-2 rounded-md border transition-colors ${
-                          wishlist.includes(product.id)
+                          isInWishlistProp(product.id)
                             ? 'border-red-300 bg-red-50 text-red-600'
                             : 'border-gray-300 text-gray-400 hover:text-red-600 hover:border-red-300'
                         }`}
                       >
-                        <Heart className={`h-4 w-4 ${wishlist.includes(product.id) ? 'fill-current' : ''}`} />
+                        <Heart className={`h-4 w-4 ${isInWishlistProp(product.id) ? 'fill-current' : ''}`} />
                       </button>
                     </div>
                   </div>
