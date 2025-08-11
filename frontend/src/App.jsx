@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import Layout from './components/Layout'
+// import Layout from './components/Layout'
 import Login from './pages/Login'
+import CreateAccount from './pages/CreateAccount'
 import Dashboard from './pages/Dashboard'
 import CustomerDashboard from './pages/CustomerDashboard'
 import CustomerOrders from './pages/CustomerOrders'
@@ -22,10 +23,19 @@ import PricelistManagement from './pages/PricelistManagement'
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userRole, setUserRole] = useState('customer') // 'admin' or 'customer'
+  const [showCreateAccount, setShowCreateAccount] = useState(false)
 
   const handleLogin = (role) => {
     setIsAuthenticated(true)
     setUserRole(role)
+  }
+
+  const handleSignUp = (userData) => {
+    // In a real app, you would create the user account here
+    console.log('Creating account for:', userData)
+    // For now, just log in the user
+    setIsAuthenticated(true)
+    setUserRole(userData.role)
   }
 
   const handleLogout = () => {
@@ -34,11 +44,14 @@ function App() {
   }
 
   if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />
+    if (showCreateAccount) {
+      return <CreateAccount onSignUp={handleSignUp} onShowLogin={() => setShowCreateAccount(false)} />
+    }
+    return <Login onLogin={handleLogin} onShowCreateAccount={() => setShowCreateAccount(true)} />
   }
 
   return (
-    <Layout userRole={userRole} onLogout={handleLogout}>
+    // <Layout userRole={userRole} onLogout={handleLogout}>
       <Routes>
         {/* Admin Routes */}
         {userRole === 'admin' && (
@@ -79,7 +92,7 @@ function App() {
           } 
         />
       </Routes>
-    </Layout>
+    // </Layout>
   )
 }
 

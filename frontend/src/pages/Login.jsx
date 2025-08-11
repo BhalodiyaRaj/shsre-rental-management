@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Package, User, Lock, Mail } from 'lucide-react'
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLogin, onShowCreateAccount }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -168,10 +168,10 @@ const Login = ({ onLogin }) => {
             <div className="mt-6 text-center">
               <button
                 type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={() => onShowCreateAccount ? onShowCreateAccount() : setIsSignUp(!isSignUp)}
                 className="font-medium text-primary-600 hover:text-primary-500"
               >
-                {isSignUp ? 'Sign In' : 'Sign Up'}
+                {onShowCreateAccount ? 'Create Account' : (isSignUp ? 'Sign In' : 'Sign Up')}
               </button>
             </div>
           </div>
